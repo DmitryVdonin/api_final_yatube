@@ -3,13 +3,16 @@ from rest_framework import permissions
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Определяет разрешение на уровне объекта.
+    Дает право на чтение всем пользователям.
 
     Дает право на изменение/удаление объекта только его автору.
     """
 
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
+    def has_permission(self, request, view):
+        return request.method in permissions.SAFE_METHODS
 
-        return obj.author == request.user
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.method in permissions.SAFE_METHODS
+            or obj.author == request.user
+        )

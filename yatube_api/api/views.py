@@ -1,15 +1,17 @@
 
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
-from rest_framework.generics import ListCreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import IsAuthenticated
 
-from posts.models import Comment, Follow, Group, Post
+from posts.models import Comment, Group, Post
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
+from .viewset_mixins import ListCreateViewSet
+
+User = get_user_model()
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -17,7 +19,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
+    permission_classes = (IsOwnerOrReadOnly,)
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -28,14 +30,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     """Передает объекты модели Comment."""
 
     serializer_class = CommentSerializer
-    permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
+    permission_classes = (IsOwnerOrReadOnly,)
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
-        new_queryset = Comment.objects.filter(post=post)
 
-        return new_queryset
+        return Comment.objects.filter(post=post)
 
     def perform_create(self, serializer):
         post_id = self.kwargs.get('post_id')
@@ -50,18 +51,18 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
 
 
-class FollowList(ListCreateAPIView):
+class FollowViewSet(ListCreateViewSet):
     """Передает объекты модели Follow."""
 
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('following__username',)
+    search_fields = ('=following__username', '=user__username')
 
     def get_queryset(self):
-        new_queryset = Follow.objects.filter(user=self.request.user)
+        user = self.request.user
 
-        return new_queryset
+        return user.followwer.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
