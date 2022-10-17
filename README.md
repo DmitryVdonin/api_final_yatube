@@ -1,36 +1,38 @@
 # api_final
-### Описание
-API социальной сети Yatube. Позволяет работать с API социальной сети Yatube: создавать и получать посты,
-подписываться на авторов и получать список своих подписок, получать список существующих сообществ и их описания.
-### Технологии
+### Description
+Yatube social network API. Allows you to work with the Yatube social network API: create and receive posts, subscribe to authors and get a list of your subscriptions, get a list of existing communities and their descriptions.
+### Technologies
 - Python 3.7
 - django 2.2.16
 - djangorestframework 3.12.4
 - djangorestframework-simplejwt 4.7.2
 - djoser 2.1.0
-### Запуск проекта в dev-режиме
-- Установите и активируйте виртуальное окружение
-- Установите зависимости из файла requirements.txt
+### Running a project in dev mode
+- Install and activate the virtual environment
+- Install dependencies from requirements.txt file
 ```
 pip install -r requirements.txt
 ``` 
-- Выполните миграции. В папке с файлом manage.py выполните команду:
+- Run the migrations. In the folder with the manage.py file, run the command:
+
 ```
  python3.manage.py migtate (windows: py.manage.py migtate)
  ```
-- Запустите сервер разработчика. В папке с файлом manage.py выполните команду:
+- Start the developer server. In the folder with the manage.py file, run the command:
+
 ```
 python3 manage.py runserver (windows: py manage.py runserver)
 ```
-### Администрирование и особенности
-- Для администрирования проекта создайте суперпользователя. В папке с файлом manage.py выполните команду:
+### Administration and Features
+- Create a superuser to administer the project. In the folder with the manage.py file, run the command:
+
 ```
 python3 manage.py createsuperuser (windows: py manage.py createsuperuser)
 ```
-- Админ-зона расположена по относительному адреу /admin/
-- Создание групп в проекте возможно только для администратора в админ-зоне
-### Работа с API
-- Получите токен для суперпользователя отправив post запрос на относительный эндпоинт api/v1/jwt/create/, передав username и password
+- The admin area is located at the relative address /admin/
+- Creation of groups in the project is possible only for the administrator in the admin area
+### Working with the API
+- Get a token for the superuser by sending a post request to the relative endpoint api/v1/jwt/create/ passing username and password
 ```
 curl --location --request POST 'http://127.0.0.1:8000/api/v1/jwt/create/' \
 --header 'Content-Type: application/json' \
@@ -39,29 +41,30 @@ curl --location --request POST 'http://127.0.0.1:8000/api/v1/jwt/create/' \
     "password": "password"
 }'
 ```
-- Примеры запросов для получения поста/списка постов
+- Sample requests for getting a post/list of posts
 ```
 curl --location --request GET 'http://127.0.0.1:8000/api/v1/posts/1/' \
---header 'Authorization: Bearer <ваш токен>' \
+--header 'Authorization: Bearer <your token>' \
 --data-raw ''
 ```
 ```
 curl --location --request GET 'http://127.0.0.1:8000/api/v1/posts/' \
---header 'Authorization: Bearer <ваш токен>' \
+--header 'Authorization: Bearer <your token>' \
 --data-raw ''
 ```
-- Пример post запроса для создания поста
+- An example of a post request to create a post
 ```
 curl --location --request POST 'http://127.0.0.1:8000/api/v1/posts/' \
---header 'Authorization: Bearer <ваш токен>' \
+--header 'Authorization: Bearer <your token>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "text": "первый пост"
+    "text": "My first post"
 }'
 ```
-- Полный список возможных эндпоинтов и видов запросов доступен по относительному эндпоинту redoc/
+- A complete list of possible endpoints and types of requests is available at the relative endpoint redoc/
 
-### Авторы
-Дмитрий Вдонин
+
+### Authors
+Dmitry Vdonin
 
 
